@@ -12,28 +12,24 @@ function RequisitesForm() {
   });
   const [isSaved, setIsSaved] = useState(false);
 
-  // Загружаем данные из локального хранилища при загрузке компонента
   useEffect(() => {
     const savedFields = JSON.parse(localStorage.getItem("requisites"));
     if (savedFields) {
       setFields(savedFields);
-      setIsSaved(true); // Если данные уже сохранены, делаем поля не редактируемыми
+      setIsSaved(true);
     }
   }, []);
 
-  // Обработчик изменения полей
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFields({ ...fields, [name]: value });
   };
 
-  // Сохранение данных и блокировка полей
   const handleSave = () => {
     localStorage.setItem("requisites", JSON.stringify(fields));
-    setIsSaved(true); // Делаем поля не редактируемыми
+    setIsSaved(true);
   };
 
-  // Копирование содержимого поля
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
     alert("Текст скопирован!");
