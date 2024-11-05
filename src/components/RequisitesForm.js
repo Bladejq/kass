@@ -11,26 +11,18 @@ export default function Requisites() {
     const docRef = useRef();
     const vidRef = useRef();
     const expRef = useRef();
-    
+
     const [isEditable, setIsEditable] = useState(true);
-    const [isSaved, setIsSaved] = useState(false); // новое состояние для проверки сохранения
 
     const changeHandler = () => {
-        if (!isSaved) {
-            setBIO({
-                fio: fioRef.current.value,
-                iin: iinRef.current.value,
-                birth: birthRef.current.value,
-                docnum: docRef.current.value,
-                viddata: vidRef.current.value,
-                expdata: expRef.current.value
-            });
-        }
-    };
-
-    const handleSave = () => {
-        setIsEditable(false);
-        setIsSaved(true); // обновляем состояние после сохранения
+        setBIO({
+            fio: fioRef.current.value,
+            iin: iinRef.current.value,
+            birth: birthRef.current.value,
+            docnum: docRef.current.value,
+            viddata: vidRef.current.value,
+            expdata: expRef.current.value
+        });
     };
 
     // Функция копирования текста
@@ -121,14 +113,7 @@ export default function Requisites() {
                     />
                     <img src={Copy} alt="" onClick={() => copyToClipboard(expRef)} />
                 </li>
-
-                <li>
-                {!isSaved && (
-              <button onClick={handleSave} className="save-button">Сохранить</button>
-            )}
-                </li>
             </ul>
-
         </div>
     );
 }
