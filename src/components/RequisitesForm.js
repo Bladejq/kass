@@ -1,71 +1,134 @@
-import React, { useState, useEffect } from "react";
-import copyIcon from "../img/copy.png";
+import React, { useContext, useRef, useState } from "react";
+import AuthContext from "../context/AuthContext";
+import { set } from "idb-keyval";
+import Copy from "../img/copy.png";
 
-function RequisitesForm() {
-  const [fields, setFields] = useState({
-    fullName: "",
-    iin: "",
-    birthDate: "",
-    documentNumber: "",
-    issueDate: "",
-    expiryDate: ""
-  });
-  const [isSaved, setIsSaved] = useState(false);
+export default function Requisites() {
+    let { bio, setBIO } = useContext(AuthContext);
+    const fioRef = useRef();
+    const iinRef = useRef();
+    const birthRef = useRef();
+    const docRef = useRef();
+    const vidRef = useRef();
+    const expRef = useRef();
+    
+    const [isEditable, setIsEditable] = useState(true);
+    const [isSaved, setIsSaved] = useState(false); // новое состояние для проверки сохранения
 
-  useEffect(() => {
-    const savedFields = JSON.parse(localStorage.getItem("requisites"));
-    if (savedFields) {
-      setFields(savedFields);
-      setIsSaved(true);
-    }
-  }, []);
+    const changeHandler = () => {
+        if (!isSaved) {
+            setBIO({
+                fio: fioRef.current.value,
+                iin: iinRef.current.value,
+                birth: birthRef.current.value,
+                docnum: docRef.current.value,
+                viddata: vidRef.current.value,
+                expdata: expRef.current.value
+            });
+        }
+    };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFields({ ...fields, [name]: value });
-  };
+    const handleSave = () => {
+        setIsEditable(false);
+        setIsSaved(true); // обновляем состояние после сохранения
+    };
 
-  const handleSave = () => {
-    localStorage.setItem("requisites", JSON.stringify(fields));
-    setIsSaved(true);
-  };
+    // Функция копирования текста
+    const copyToClipboard = (ref) => {
+        ref.current.select();
+        document.execCommand("copy");
+    };
 
-  const handleCopy = (text) => {
-    navigator.clipboard.writeText(text);
-    alert("Текст скопирован!");
-  };
+    return (
+        <div id="req">
+            <ul className="rekvizit">
+                <li>
+                    <span className="atritem">ФИО</span><br/>
+                    <input
+                        ref={fioRef}
+                        value={bio.fio}
+                        type="text"
+                        maxLength="28"
+                        spellCheck="false"
+                        className="rekitem"
+                        onChange={changeHandler}
+                        readOnly={!isEditable} 
+                    />
+                    <img src={Copy} alt="" onClick={() => copyToClipboard(fioRef)} />
+                </li>
+                <li>
+                    <span className="atritem">ИИН</span><br/>
+                    <input
+                        ref={iinRef}
+                        value={bio.iin}
+                        type="text"
+                        maxLength="12"
+                        className="rekitem"
+                        onChange={changeHandler}
+                        readOnly={!isEditable} 
+                    />
+                    <img src={Copy} alt="" onClick={() => copyToClipboard(iinRef)} />
+                </li>
+                <li>
+                    <span className="atritem">Дата рождения</span><br/>
+                    <input
+                        ref={birthRef}
+                        value={bio.birth}
+                        type="text"
+                        maxLength="10"
+                        className="rekitem"
+                        onChange={changeHandler}
+                        readOnly={!isEditable} 
+                    />
+                    <img src={Copy} alt="" onClick={() => copyToClipboard(birthRef)} />
+                </li>
+                <li>
+                    <span className="atritem">Номер документа</span><br/>
+                    <input
+                        ref={docRef}
+                        value={bio.docnum}
+                        type="text"
+                        maxLength="9"
+                        className="rekitem"
+                        onChange={changeHandler}
+                        readOnly={!isEditable} 
+                    />
+                    <img src={Copy} alt="" onClick={() => copyToClipboard(docRef)} />
+                </li>
+                <li>
+                    <span className="atritem">Дата выдачи</span><br/>
+                    <input
+                        ref={vidRef}
+                        value={bio.viddata}
+                        type="text"
+                        maxLength="10"
+                        className="rekitem"
+                        onChange={changeHandler}
+                        readOnly={!isEditable} 
+                    />
+                    <img src={Copy} alt="" onClick={() => copyToClipboard(vidRef)} />
+                </li>
+                <li>
+                    <span className="atritem">Срок действия</span><br/>
+                    <input
+                        ref={expRef}
+                        value={bio.expdata}
+                        type="text"
+                        maxLength="10"
+                        className="rekitem"
+                        onChange={changeHandler}
+                        readOnly={!isEditable} 
+                    />
+                    <img src={Copy} alt="" onClick={() => copyToClipboard(expRef)} />
+                </li>
 
-  return (
-    <div id="req">
-      <ul className="rekvizit">
-        {Object.keys(fields).map((fieldKey, index) => (
-          <li key={index}>
-            <span className="atritem">{fieldKey === "fullName" ? "ФИО" :
-                                      fieldKey === "iin" ? "ИИН" :
-                                      fieldKey === "birthDate" ? "Дата рождения" :
-                                      fieldKey === "documentNumber" ? "Номер документа" :
-                                      fieldKey === "issueDate" ? "Дата выдачи" : 
-                                      "Срок действия"}
-            </span>
-            <br />
-            <input
-              type="text"
-              name={fieldKey}
-              maxLength={fieldKey === "iin" ? 12 : 28}
-              value={fields[fieldKey]}
-              onChange={handleChange}
-              className="rekitem"
-              readOnly={isSaved}
-            />
-            <img src={copyIcon} alt="copy icon" onClick={() => handleCopy(fields[fieldKey])} style={{ cursor: "pointer" }} />
-          </li>
-        ))}
-      </ul>
-      {!isSaved && (
-        <button onClick={handleSave}>Сохранить</button>
-      )}
-    </div>
-  );
+                <li>
+                {!isSaved && (
+              <button onClick={handleSave} className="save-button">Сохранить</button>
+            )}
+                </li>
+            </ul>
+
+        </div>
+    );
 }
-
-export default RequisitesForm;

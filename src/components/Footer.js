@@ -1,6 +1,6 @@
 import React from "react";
 import qrIcon from "../img/qr.png";
-import uploadIcon from "../img/upload.png";
+import uploadIcon from "../img/upload.svg";
 
 function Footer() {
   const handleShare = async () => {
@@ -31,7 +31,7 @@ function Footer() {
         </button>
         <button id="btnftr2" className="share" onClick={handleShare}>
           <img src={uploadIcon} alt="" />
-          Поделиться документом
+          Отправить документ
         </button>
       </div>
     </div>

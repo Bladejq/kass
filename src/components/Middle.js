@@ -6,7 +6,7 @@ function Middle({ activeTab }) {
   return (
     <div className="middle">
       <div className="kvfysmfp">
-        {activeTab === "Документ" ? (
+        {activeTab === "doc" ? (
           <UploadForm />
         ) : (
           <RequisitesForm />
